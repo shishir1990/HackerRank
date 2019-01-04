@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define MAX_STRING_LENGTH 6
 
 struct package
@@ -32,17 +33,79 @@ typedef struct town town;
 
 
 void print_all_packages(town t) {
+	int i,j;
+	printf("%s:\n",t.name);
+	for(i=0;i<t.offices_count;i++)
+	{
+		printf("\t%d:\n",i);
+		for(j=0;j<t.offices[i].packages_count;j++)
+		{
+			printf("\t\t%s\n",t.offices[i].packages[j].id);
+		}
+	}
 }
 
 void send_all_acceptable_packages(town* source, int source_office_index, town* target, int target_office_index) {	
+	int i,j, min, max, pkg_count=0;
+	package source_packages[10];
+
+	min = target->offices[target_office_index].min_weight;
+	max = target->offices[target_office_index].max_weight;
+
+	for(j=0;j<source->offices[source_office_index].packages_count;j++)
+	{
+		if(source->offices[source_office_index].packages[j].weight >= min &
+			source->offices[source_office_index].packages[j].weight <= max)
+		{
+			target->offices[target_office_index].packages_count++;
+			target->offices[target_office_index].packages = (package*) realloc(target->offices[target_office_index].packages,
+				sizeof(package)*target->offices[target_office_index].packages_count);
+			target->offices[target_office_index].packages[target->offices[target_office_index].packages_count -1] = 
+				source->offices[source_office_index].packages[j];
+		}
+		else
+		{
+			source_packages[pkg_count] = source->offices[source_office_index].packages[j];
+			pkg_count++;
+		}		
+	}
+	free(source->offices[source_office_index].packages);
+	source->offices[source_office_index].packages_count = pkg_count;
+	source->offices[source_office_index].packages = (package*)malloc(sizeof(package)*source->offices[source_office_index].packages_count);
+	for(i=0;i<source->offices[source_office_index].packages_count;i++)
+	{
+		source->offices[source_office_index].packages[i] = source_packages[i];
+	}
 }
 
 town town_with_most_packages(town* towns, int towns_count) {
+	int town_index=0, i, j, total_packages, max_packages=0;
+	for(i=0;i<towns_count;i++)
+	{
+		total_packages = 0;
+		for(j=0;j<towns[i].offices_count;j++)
+		{
+			total_packages += towns[i].offices[j].packages_count;
+		}
+		if(total_packages > max_packages)
+		{
+			max_packages = total_packages;
+			town_index = i;
+		}
+	}
+	return towns[town_index];
 }
 
 town* find_town(town* towns, int towns_count, char* name) {
+	int i=0;
+	for(i=0;i<towns_count;i++)
+	{
+		if(strcmp(towns[i].name, name)==0)
+			break;
+	}
+	return &towns[i];
 }
-
+ 
 int main()
 {
 	int towns_count;
