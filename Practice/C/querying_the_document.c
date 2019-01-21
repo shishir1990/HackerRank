@@ -18,7 +18,28 @@ char*** kth_paragraph(char**** document, int k) {
 }
 
 char**** get_document(char* text) {
+    int len = strlen(text);
+    int i;
 
+    for(i=0;i<len;i++)
+    {
+        if(text[i] == ' ')
+        {
+
+        }
+        else if(text[i] == '.')
+        {
+
+        }
+        else if(text[i] == '\n')
+        {
+
+        }
+        else
+        {
+            
+        }
+    }
 }
 
 
