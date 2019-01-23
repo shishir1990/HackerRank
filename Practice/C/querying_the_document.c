@@ -18,28 +18,49 @@ char*** kth_paragraph(char**** document, int k) {
 }
 
 char**** get_document(char* text) {
+#if 1
     int len = strlen(text);
-    int i;
+    int i, cnt_ch=0, cnt_wrd=0, cnt_sen=0, cnt_par=0;
+    char *wrd, **sen, ***par, ****doc;
+
 
     for(i=0;i<len;i++)
     {
         if(text[i] == ' ')
         {
-
+            sen = (char**) realloc(sen,(sizeof(char*) * (cnt_wrd+1)));
+            wrd[cnt_ch] = '\0';
+            sen[cnt_wrd++] = wrd;
+            free(wrd);
         }
         else if(text[i] == '.')
         {
-
+            par = (char***)realloc(par, (sizeof(char**) * (cnt_sen+1)));
+            wrd[cnt_ch] = '\0';
+            sen[cnt_wrd] = wrd;
+            par[cnt_sen++] = sen;
+            free(wrd);
+            free(sen);
         }
         else if(text[i] == '\n')
         {
-
+            doc = (char****)realloc(doc, (sizeof(char***) * (cnt_par+1)));
+            wrd[cnt_ch] = '\0';
+            sen[cnt_wrd] = wrd;
+            par[cnt_sen] = sen;
+            doc[cnt_par++] = par;
+            free(wrd);
+            free(sen);
+            free(par);
         }
         else
         {
-            
+            wrd = (char*)realloc(wrd, (sizeof(char )*(cnt_ch+1)));
+            wrd[cnt_ch++] = text[i];
         }
     }
+    return doc;
+#endif
 }
 
 
