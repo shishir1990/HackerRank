@@ -5,64 +5,77 @@
 #define MAX_CHARACTERS 1005
 #define MAX_PARAGRAPHS 5
 
-char* kth_word_in_mth_sentence_of_nth_paragraph(char**** document, int k, int m, int n) {
-
+char *kth_word_in_mth_sentence_of_nth_paragraph(char ****document, int k, int m, int n) 
+{
+  return document[n - 1][m - 1][k - 1];
 }
 
-char** kth_sentence_in_mth_paragraph(char**** document, int k, int m) { 
-
+char **kth_sentence_in_mth_paragraph(char ****document, int k, int m) 
+{
+  return document[m - 1][k - 1];
 }
 
-char*** kth_paragraph(char**** document, int k) {
-
+char ***kth_paragraph(char ****document, int k) 
+{ 
+    return document[k - 1]; 
 }
 
-char**** get_document(char* text) {
-#if 1
-    int len = strlen(text);
-    int i, cnt_ch=0, cnt_wrd=0, cnt_sen=0, cnt_par=0;
-    char *wrd, **sen, ***par, ****doc;
+char ****get_document(char *text) 
+{
+  int len = strlen(text);
+  char *wrd, **sen, ***par, ****doc;
+  int i, j, cnt_ch = 0, cnt_wrd = 0, cnt_sen = 0, cnt_par = 0;
 
-
-    for(i=0;i<len;i++)
+  for (i = 0; i < len; i++) {
+    if (text[i] == ' ') 
     {
-        if(text[i] == ' ')
-        {
-            sen = (char**) realloc(sen,(sizeof(char*) * (cnt_wrd+1)));
-            wrd[cnt_ch] = '\0';
-            sen[cnt_wrd++] = wrd;
-            free(wrd);
-        }
-        else if(text[i] == '.')
-        {
-            par = (char***)realloc(par, (sizeof(char**) * (cnt_sen+1)));
-            wrd[cnt_ch] = '\0';
-            sen[cnt_wrd] = wrd;
-            par[cnt_sen++] = sen;
-            free(wrd);
-            free(sen);
-        }
-        else if(text[i] == '\n')
-        {
-            doc = (char****)realloc(doc, (sizeof(char***) * (cnt_par+1)));
-            wrd[cnt_ch] = '\0';
-            sen[cnt_wrd] = wrd;
-            par[cnt_sen] = sen;
-            doc[cnt_par++] = par;
-            free(wrd);
-            free(sen);
-            free(par);
-        }
-        else
-        {
-            wrd = (char*)realloc(wrd, (sizeof(char )*(cnt_ch+1)));
-            wrd[cnt_ch++] = text[i];
-        }
+      if (cnt_wrd == 0)
+        sen = malloc(sizeof(char *));
+      else
+        sen = realloc(sen, (sizeof(char *) * (cnt_wrd + 1)));
+      wrd[cnt_ch] = '\0';
+      sen[cnt_wrd] = wrd;
+      cnt_ch = 0;
+      cnt_wrd++;
+    } 
+    else if (text[i] == '.') 
+    {
+      if (cnt_sen == 0)
+        par = malloc(sizeof(char **));
+      else
+        par = realloc(par, (sizeof(char **) * (cnt_sen + 1)));
+      wrd[cnt_ch] = '\0';
+      sen[cnt_wrd] = wrd;
+      par[cnt_sen] = sen;
+      cnt_ch = 0;
+      cnt_wrd = 0;
+      cnt_sen++;
+    } 
+    else if (text[i] == '\n') 
+    {
+      if (cnt_par == 0)
+        doc = malloc(sizeof(char ***));
+      else
+        doc = realloc(doc, (sizeof(char ***) * (cnt_par + 1)));
+      par[cnt_sen] = sen;
+      doc[cnt_par] = par;
+      cnt_sen = 0;
+      cnt_par++;
+    } 
+    else 
+    {
+      if (cnt_ch == 0)
+        wrd = malloc(sizeof(char));
+      else
+        wrd = realloc(wrd, (sizeof(char) * (cnt_ch + 1)));
+      wrd[cnt_ch] = text[i];
+      cnt_ch++;
     }
-    return doc;
-#endif
+  }
+  doc = realloc(doc, (sizeof(char ***) * (cnt_par + 1)));
+  doc[cnt_par] = par;
+  return doc;
 }
-
 
 char* get_input_text() {	
     int paragraph_count;
