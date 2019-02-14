@@ -47,7 +47,7 @@ struct document get_document(char* text) {
     else if (text[i] == '.') 
     {
       if (par.sentence_count == 0)
-        par.data = malloc(sizeof(char **));
+        par.data = malloc(sizeof(struct sentence*));
       else
         par.data = realloc(par.data, (sizeof(struct sentence*) * (par.sentence_count + 1)));
       wrd.data[cnt_ch] = '\0';
@@ -71,8 +71,6 @@ struct document get_document(char* text) {
     else 
     {
         if (cnt_ch == 0)
-
-
             wrd.data = malloc(sizeof(char));
         else
             wrd.data = realloc(wrd.data, (sizeof(char) * (cnt_ch + 1)));
@@ -82,6 +80,7 @@ struct document get_document(char* text) {
   }
   doc.data = realloc(doc.data, (sizeof(struct paragraph*) * (doc.paragraph_count + 1)));
   doc.data[doc.paragraph_count] = par;
+  doc.paragraph_count++;
   return doc;
 }
 
